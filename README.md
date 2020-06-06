@@ -1,5 +1,5 @@
 # ArduinoADB
-ADB to USB converter using an Arduino Uno (others may work as well).
+ADB to USB keyboard converter using an Arduino Uno or compatible clone. Clone boards must have an ATmega16U2; boards with other USB-Serial chips will not work.
 
 ## Connections
 The ADB connection should be set up with the 5V pin to 5V, ground to ground, data to pin 8, and a 1-10K resistor between 5V and pin 8. Here's a visual representation for reference:
@@ -26,6 +26,8 @@ Note: If you don't have a female 4-pin Mini-DIN port, you can substitute with th
 3. Open Atmel FLIP or dfu-programmer and flash the `Arduino-keyboard-0.3.hex` firmware to the Arduino.
 4. Disconnect and reconnect the Arduino to the computer.
 
+If you want to switch the Arduino back to normal (not a keyboard), just do steps 2-4 with `Arduino-usbserial-uno.hex` instead.
+
 ## Usage
 The Arduino itself is Plug & Play, but do not unplug the keyboard from the Arduino. I cannot confirm whether the ADB port here is hot-pluggable, but assume it isn't.
 
@@ -33,4 +35,4 @@ The Arduino itself is Plug & Play, but do not unplug the keyboard from the Ardui
 Some keyboards have locking Caps Lock keys, including the Apple Extended Keyboard I/II and AppleDesign keyboard. For the Caps Lock key to work properly, you must define `LOCKING_CAPS` in the main sketch file. This is already done for you, but if you're using a keyboard that doesn't have a locking Caps Lock key, you must comment out that line.
 
 ## Original source
-The code for communicating over ADB was borrowed from [tmk/tmk_keyboard](https://github.com/tmk/tmk_keyboard/blob/master/converter/adb_usb). If using an Arduino with an ATmega8x processor (Leonardo, Pro Micro) it may be better to use that instead, since these boards natively support the converter.
+The code for communicating over ADB was borrowed from [tmk/tmk_keyboard](https://github.com/tmk/tmk_keyboard/blob/master/converter/adb_usb). If using an Arduino with an ATmega32U2/4 processor (Leonardo, Pro Micro) it may be better to use that instead, since these boards natively support the converter.
