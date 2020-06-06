@@ -28,3 +28,9 @@ Note: If you don't have a female 4-pin Mini-DIN port, you can substitute with th
 
 ## Usage
 The Arduino itself is Plug & Play, but do not unplug the keyboard from the Arduino. I cannot confirm whether the ADB port here is hot-pluggable, but assume it isn't.
+
+### Note on Caps Lock
+Some keyboards have locking Caps Lock keys, including the Apple Extended Keyboard I/II and AppleDesign keyboard. For the Caps Lock key to work properly, you must define `LOCKING_CAPS` in the main sketch file. This is already done for you, but if you're using a keyboard that doesn't have a locking Caps Lock key, you must comment out that line.
+
+## Original source
+The code for communicating over ADB was borrowed from [tmk/tmk_keyboard](https://github.com/tmk/tmk_keyboard/blob/master/tmk_core/protocol/adb.c).
