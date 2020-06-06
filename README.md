@@ -33,4 +33,4 @@ The Arduino itself is Plug & Play, but do not unplug the keyboard from the Ardui
 Some keyboards have locking Caps Lock keys, including the Apple Extended Keyboard I/II and AppleDesign keyboard. For the Caps Lock key to work properly, you must define `LOCKING_CAPS` in the main sketch file. This is already done for you, but if you're using a keyboard that doesn't have a locking Caps Lock key, you must comment out that line.
 
 ## Original source
-The code for communicating over ADB was borrowed from [tmk/tmk_keyboard](https://github.com/tmk/tmk_keyboard/blob/master/tmk_core/protocol/adb.c).
+The code for communicating over ADB was borrowed from [tmk/tmk_keyboard](https://github.com/tmk/tmk_keyboard/blob/master/converter/adb_usb). If using an Arduino with an ATmega8x processor (Leonardo, Pro Micro) it may be better to use that instead, since these boards natively support the converter.
