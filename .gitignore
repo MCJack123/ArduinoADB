@@ -1,0 +1,13 @@
+# default rule to ignore all except for exceptions specified
+*
+# do not ignore this file
+!.gitignore
+# don't ignore files inside of the folder used by the Arduino IDE
+!adb_to_usb
+!adb_to_usb/*
+# don't ignore important hex files
+!Arduino-keyboard-0.3.hex
+!Arduino-usbserial-uno.hex
+# don't ignore documentation
+!README.md
+!LICENSE
