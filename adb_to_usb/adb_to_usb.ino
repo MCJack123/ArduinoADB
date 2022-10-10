@@ -1,9 +1,10 @@
 #include "adb.h"
 #include "keymap.h"
-#define LOCKING_CAPS // comment this out if not using a keyboard with locking Caps Lock
+// #define LOCKING_CAPS // comment this out if not using a keyboard with locking Caps Lock
 
 static bool has_media_keys = false;
 static bool is_iso_layout = false;
+static bool swap_alt_gui = false; // set this to true to swap the alt and the GUI/super keys to match the functionality of a keyboard with winkey
 uint8_t buf[8] = { 0 };
 #ifdef LOCKING_CAPS
 bool capsOn = false;
@@ -14,16 +15,25 @@ static void register_key(uint8_t key)
 {
     uint8_t tmp[6];
     if (key&0x80) {
+        // handles key press
         //matrix[row] &= ~(1<<col);
         switch (key & 0x7F) {
           case 0x36: // LCTRL
             buf[0] &= ~(1<<0); break;
           case 0x37: // LGUI
-            buf[0] &= ~(1<<3); break;
+            if(swap_alt_gui){
+              buf[0] &= ~(1<<2); // LALT
+            } else{
+              buf[0] &= ~(1<<3); // LGUI
+            } break;
           case 0x38: // LSHIFT
             buf[0] &= ~(1<<1); break;
           case 0x3A: // LALT
-            buf[0] &= ~(1<<2); break;
+            if(swap_alt_gui){
+              buf[0] &= ~(1<<3); // LGUI
+            } else{
+              buf[0] &= ~(1<<2); // LALT
+            } break;
           case 0x7B: // RSHIFT
             buf[0] &= ~(1<<5); break;
           case 0x7C: // RALT
@@ -54,15 +64,24 @@ static void register_key(uint8_t key)
 #ifdef LOCKING_CAPS
         if (key == 57 && capsOn) return;
 #endif
+        // handles key releases
         switch (key) {
           case 0x36: // LCTRL
             buf[0] |= (1<<0); break;
           case 0x37: // LGUI
-            buf[0] |= (1<<3); break;
+            if(swap_alt_gui) {
+              buf[0] |= (1<<2); // LALT
+            } else { 
+              buf[0] |= (1<<3); // LGUI
+            } break;
           case 0x38: // LSHIFT
             buf[0] |= (1<<1); break;
           case 0x3A: // LALT
-            buf[0] |= (1<<2); break;
+            if(swap_alt_gui) {
+              buf[0] |= (1<<3); // LGUI
+            } else { 
+              buf[0] |= (1<<2); // LALT
+            } break;
           case 0x7B: // RSHIFT
             buf[0] |= (1<<5); break;
           case 0x7C: // RALT
