@@ -1,6 +1,7 @@
 #include "adb.h"
 #include "keymap.h"
 // #define LOCKING_CAPS // comment this out if not using a keyboard with locking Caps Lock
+// #define SWAP_ALT_GUI // uncomment this if you want to swap the alt and super(GUI) keys to emulate behavior/positioning of windows key
 
 static bool has_media_keys = false;
 static bool is_iso_layout = false;
@@ -21,19 +22,21 @@ static void register_key(uint8_t key)
           case 0x36: // LCTRL
             buf[0] &= ~(1<<0); break;
           case 0x37: // LGUI
-            if(swap_alt_gui){
-              buf[0] &= ~(1<<2); // LALT
-            } else{
-              buf[0] &= ~(1<<3); // LGUI
-            } break;
+#ifdef SWAP_ALT_GUI
+            buf[0] &= ~(1<<2); // LALT
+#else
+            buf[0] &= ~(1<<3); // LGUI
+#endif
+            break;
           case 0x38: // LSHIFT
             buf[0] &= ~(1<<1); break;
           case 0x3A: // LALT
-            if(swap_alt_gui){
-              buf[0] &= ~(1<<3); // LGUI
-            } else{
-              buf[0] &= ~(1<<2); // LALT
-            } break;
+#ifdef SWAP_ALT_GUI
+            buf[0] &= ~(1<<3); // LGUI
+#else
+            buf[0] &= ~(1<<2); // LALT
+#endif
+            break;
           case 0x7B: // RSHIFT
             buf[0] &= ~(1<<5); break;
           case 0x7C: // RALT
@@ -69,19 +72,21 @@ static void register_key(uint8_t key)
           case 0x36: // LCTRL
             buf[0] |= (1<<0); break;
           case 0x37: // LGUI
-            if(swap_alt_gui) {
-              buf[0] |= (1<<2); // LALT
-            } else { 
-              buf[0] |= (1<<3); // LGUI
-            } break;
+#ifdef SWAP_ALT_GUI
+            buf[0] |= (1<<2); // LALT
+#else 
+            buf[0] |= (1<<3); // LGUI
+#endif
+             break;
           case 0x38: // LSHIFT
             buf[0] |= (1<<1); break;
           case 0x3A: // LALT
-            if(swap_alt_gui) {
-              buf[0] |= (1<<3); // LGUI
-            } else { 
-              buf[0] |= (1<<2); // LALT
-            } break;
+#ifdef SWAP_ALT_GUI
+            buf[0] |= (1<<3); // LGUI
+#else 
+            buf[0] |= (1<<2); // LALT
+#endif
+            break;
           case 0x7B: // RSHIFT
             buf[0] |= (1<<5); break;
           case 0x7C: // RALT
