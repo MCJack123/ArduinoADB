@@ -5,7 +5,6 @@
 
 static bool has_media_keys = false;
 static bool is_iso_layout = false;
-static bool swap_alt_gui = false; // set this to true to swap the alt and the GUI/super keys to match the functionality of a keyboard with winkey
 uint8_t buf[8] = { 0 };
 #ifdef LOCKING_CAPS
 bool capsOn = false;
