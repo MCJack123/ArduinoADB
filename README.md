@@ -1,3 +1,17 @@
+#  ArduinoUnoADB
+
+Most of this project, including this README, is shamelesly lifted from [ArduinoADB](https://github.com/MCJack123/ArduinoADB)
+I did some minor cleanup, removing functionality for mice and keyboards I have no use for.
+I also tweaked the ADB polling frequency to make it work better with my IIGS keyboard, which was dropping repeat keystrokes.
+I also made it so holding a key down causes it to repeat as long as depressed.  
+
+All real work was done by, and credit should go to ArduinoADB, and tmk_keyboard, which is the true gesesis of most of this.
+
+The documention in and around tmk_keyboard is actually quite good, so I would go there if you are unsure or have issues with anything.
+
+
+##### End of ArduinoUnoAdb contribution ####
+
 # ArduinoADB
 ADB to USB keyboard converter using an Arduino Uno or compatible clone. Clone boards must have an ATmega16U2; boards with other USB-Serial chips will not work.
 

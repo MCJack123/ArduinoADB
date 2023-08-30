@@ -40,6 +40,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <util/delay.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <string.h>
 #include "adb.h"
 //#include "print.h"
 
@@ -48,12 +49,6 @@ POSSIBILITY OF SUCH DAMAGE.
 #define data_lo() (ADB_DDR |=  (1<<ADB_DATA_BIT))
 #define data_hi() (ADB_DDR &= ~(1<<ADB_DATA_BIT))
 #define data_in() (ADB_PIN &   (1<<ADB_DATA_BIT))
-
-#ifdef ADB_PSW_BIT
-static inline void psw_lo(void);
-static inline void psw_hi(void);
-static inline bool psw_in(void);
-#endif
 
 static inline void attention(void);
 static inline void place_bit0(void);
@@ -67,17 +62,7 @@ void adb_host_init(void)
 {
     ADB_PORT &= ~(1<<ADB_DATA_BIT);
     data_hi();
-#ifdef ADB_PSW_BIT
-    psw_hi();
-#endif
 }
-
-#ifdef ADB_PSW_BIT
-bool adb_host_psw(void)
-{
-    return psw_in();
-}
-#endif
 
 /*
  * Don't call this in a row without the delay, otherwise it makes some of poor controllers
@@ -92,22 +77,12 @@ uint16_t adb_host_kbd_recv(uint8_t addr)
     return adb_host_talk(addr, ADB_REG_0);
 }
 
-#ifdef ADB_MOUSE_ENABLE
-__attribute__ ((weak))
-void adb_mouse_init(void) {
-    return;
-}
-
-__attribute__ ((weak))
-void adb_mouse_task(void) {
-    return;
-}
-#endif
-
 // This sends Talk command to read data from register and returns length of the data.
 uint8_t adb_host_talk_buf(uint8_t addr, uint8_t reg, uint8_t *buf, uint8_t len)
 {
-    for (int8_t i =0; i < len; i++) buf[i] = 0;
+    
+    //for (int8_t i =0; i < len; i++) buf[i] = 0;
+    memset(buf, 0, sizeof(uint8_t) * len);
 
     cli();
     attention();
@@ -212,12 +187,15 @@ error:
     return n/8;
 }
 
-uint16_t adb_host_talk(uint8_t addr, uint8_t reg)
-{
+uint16_t adb_host_talk(uint8_t addr, uint8_t reg) {
+    
     uint8_t len;
     uint8_t buf[8];
     len = adb_host_talk_buf(addr, reg, buf, 8);
-    if (len != 2) return 0;
+    //we should always get a 2 keycode pair back
+    if (len != 2) {
+        return 0;
+    } 
     return (buf[0]<<8 | buf[1]);
 }
 
@@ -253,35 +231,6 @@ void adb_host_flush(uint8_t addr)
     _delay_us(200);             // Tlt/Stop to Start
     sei();
 }
-
-// send state of LEDs
-void adb_host_kbd_led(uint8_t addr, uint8_t led)
-{
-    // Listen Register2
-    //  upper byte: not used
-    //  lower byte: bit2=ScrollLock, bit1=CapsLock, bit0=NumLock
-    adb_host_listen(addr, 2, 0, led & 0x07);
-}
-
-
-#ifdef ADB_PSW_BIT
-static inline void psw_lo()
-{
-    ADB_DDR  |=  (1<<ADB_PSW_BIT);
-    ADB_PORT &= ~(1<<ADB_PSW_BIT);
-}
-static inline void psw_hi()
-{
-    ADB_PORT |=  (1<<ADB_PSW_BIT);
-    ADB_DDR  &= ~(1<<ADB_PSW_BIT);
-}
-static inline bool psw_in()
-{
-    ADB_PORT |=  (1<<ADB_PSW_BIT);
-    ADB_DDR  &= ~(1<<ADB_PSW_BIT);
-    return ADB_PIN&(1<<ADB_PSW_BIT);
-}
-#endif
 
 static inline void attention(void)
 {

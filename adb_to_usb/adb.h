@@ -41,29 +41,18 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <stdint.h>
 #include <stdbool.h>
 
+//any less and IIGS keyboard begins dropping repeat keys
+#define ADB_POLLING_DELAY_MS 22
+
 #define ADB_PORT PORTB
 #define ADB_PIN PINB
 #define ADB_DDR DDRB
 #define ADB_DATA_BIT 0
 
-#if !(defined(ADB_PORT) && \
-      defined(ADB_PIN)  && \
-      defined(ADB_DDR)  && \
-      defined(ADB_DATA_BIT))
-#   error "ADB port setting is required in config.h"
-#endif
-
-#define ADB_POWER       0x7F
-#define ADB_CAPS        0x39
-
-
 /* ADB commands */
 // Default Address
 #define ADB_ADDR_0          0
-#define ADB_ADDR_DONGLE     1
 #define ADB_ADDR_KEYBOARD   2
-#define ADB_ADDR_MOUSE      3
-#define ADB_ADDR_TABLET     4
 #define ADB_ADDR_APPLIANCE  7
 #define ADB_ADDR_8          8
 #define ADB_ADDR_9          9
@@ -75,7 +64,6 @@ POSSIBILITY OF SUCH DAMAGE.
 #define ADB_ADDR_15         15
 // for temporary purpose, do not use for polling
 #define ADB_ADDR_TMP        15
-#define ADB_ADDR_MOUSE_POLL 10
 // Command Type
 #define ADB_CMD_RESET       0
 #define ADB_CMD_FLUSH       1
@@ -94,10 +82,6 @@ POSSIBILITY OF SUCH DAMAGE.
 #define ADB_HANDLER_M3501               0x02
 #define ADB_HANDLER_M1242_ANSI          0x10
 #define ADB_HANDLER_EXTENDED_KEYBOARD   0x03
-#define ADB_HANDLER_CLASSIC1_MOUSE      0x01
-#define ADB_HANDLER_CLASSIC2_MOUSE      0x02
-#define ADB_HANDLER_EXTENDED_MOUSE      0x04
-#define ADB_HANDLER_TURBO_MOUSE         0x32
 
 
 // ADB host
@@ -109,9 +93,5 @@ uint8_t  adb_host_talk_buf(uint8_t addr, uint8_t reg, uint8_t *buf, uint8_t len)
 void     adb_host_listen(uint8_t addr, uint8_t reg, uint8_t data_h, uint8_t data_l);
 void     adb_host_listen_buf(uint8_t addr, uint8_t reg, uint8_t *buf, uint8_t len);
 void     adb_host_flush(uint8_t addr);
-void     adb_host_kbd_led(uint8_t addr, uint8_t led);
-void     adb_mouse_task(void);
-void     adb_mouse_init(void);
-
 
 #endif
